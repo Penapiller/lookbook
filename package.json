@@ -1,0 +1,16 @@
+{
+  "name": "halloween-lookbook",
+  "type": "module",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "sizes": "node scripts/make-sizes.mjs",
+    "dev": "npm run sizes && astro dev",
+    "build": "npm run sizes && astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "astro": "^5.0.0",
+    "sharp": "^0.33.5"
+  }
+}
