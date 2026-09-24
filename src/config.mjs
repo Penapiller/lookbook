@@ -1,6 +1,6 @@
 // ─── EDIT THESE ────────────────────────────────────────────────
 // Your site's address, with no trailing slash. Used to build BBCode links.
-export const SITE_URL = 'https://websitename.com';
+export const SITE_URL = 'https://domovoiden.gravityfallsroxs.workers.dev/';
 
 // Your species name, shown in the header and page titles.
 export const SITE_NAME = 'Domovoi Den';
