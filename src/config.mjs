@@ -46,7 +46,7 @@ export const COLORS = {
 // its file name here. If the file isn't found, the site name is
 // shown as text instead.
 export const HEADER = {
-  image: 'https://txt.1001fonts.net/img/txt/dHRmLjY2LjNkMmY0MS5SRzl0YjNadmFTQkVaVzQuMA/jingle-mochi-demo.italic-italic.webp',
+  image: '/site/header.png',
   width: 900,        // how wide it shows, in pixels (height follows automatically)
   colorBehind: false, // true = show the bar color behind the image (nice for transparent PNGs)
 };
