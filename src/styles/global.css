@@ -57,7 +57,7 @@ header.column { padding-top: 1.5rem; }
   border: 1px solid var(--border);
   border-radius: var(--radius);
 }
-.nav ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; }
+.nav ul { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: left; }
 .nav a {
   display: block;
   padding: 0.65rem 1.4rem;
