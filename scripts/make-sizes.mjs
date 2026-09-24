@@ -10,6 +10,9 @@ const petsDir = path.join(root, 'src/content/pets');
 const outDir = path.join(root, 'public/pets');
 fs.mkdirSync(outDir, { recursive: true });
 
+// Changing the settings file re-makes every size.
+const configTime = fs.statSync(path.join(root, 'src/config.mjs')).mtimeMs;
+
 const files = fs.existsSync(petsDir) ? fs.readdirSync(petsDir).filter((f) => f.endsWith('.json')) : [];
 let made = 0;
 let skipped = 0;
@@ -31,7 +34,7 @@ for (const file of files) {
     console.warn(`⚠ Image not found for pet ${pet.id}: ${pet.image}`);
     continue;
   }
-  const srcTime = fs.statSync(src).mtimeMs;
+  const srcTime = Math.max(fs.statSync(src).mtimeMs, configTime);
 
   for (const h of HEIGHTS) {
     const out = path.join(outDir, `${pet.id}-${h}.png`);
