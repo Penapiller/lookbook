@@ -26,6 +26,7 @@ const sizes = await Promise.all(
     return { height: h, width, url: `${SITE_URL}/pets/${id}-${h}.png` };
   })
 );
+const bio = (pet.bio ?? '').trim();
 const pageUrl = `${SITE_URL}/${id}`;
 const heroHeight = HEIGHTS.includes(500) ? 500 : HEIGHTS[0];
 ---
@@ -33,8 +34,16 @@ const heroHeight = HEIGHTS.includes(500) ? 500 : HEIGHTS[0];
   <a class="back" href="/lookbook">← Back to the Look Book</a>
 
   <div class="panel pet-layout">
-    <div class="pet-image">
-      <img src={`/pets/${id}-${heroHeight}.png`} alt={`Pet ${id} by ${pet.artist}`} />
+    <div class="pet-left">
+      <div class="pet-image">
+        <img src={`/pets/${id}-${heroHeight}.png`} alt={`Pet ${id} by ${pet.artist}`} />
+      </div>
+      {bio && (
+        <div class="bio-box">
+          <h2>Bio</h2>
+          <p>{bio}</p>
+        </div>
+      )}
     </div>
 
     <div>
@@ -103,3 +112,14 @@ const heroHeight = HEIGHTS.includes(500) ? 500 : HEIGHTS[0];
     });
   </script>
 </Base>
+
+<style>
+  .pet-left { display: grid; gap: 1rem; }
+  .bio-box {
+    padding: 0.8rem 1rem 0.9rem;
+    border: 2px solid var(--border);
+    border-radius: var(--radius);
+  }
+  .bio-box h2 { font-size: 1.3rem; margin: 0 0 0.3rem; }
+  .bio-box p { margin: 0; white-space: pre-line; overflow-wrap: anywhere; }
+</style>
