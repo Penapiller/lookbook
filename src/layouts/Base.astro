@@ -1,8 +1,52 @@
 ---
 import '../styles/global.css';
-import { SITE_NAME, SITE_TAGLINE } from '../config.mjs';
-const { title, description = SITE_TAGLINE, showTagline = true } = Astro.props;
-const pageTitle = title ? `${title} · ${SITE_NAME}` : SITE_NAME;
+import fs from 'node:fs';
+import path from 'node:path';
+import { SITE_NAME, SITE_TAGLINE, FOOTER_TEXT, COLORS, HEADER, BACKGROUND, NAV_LINKS } from '../config.mjs';
+
+const { title, description = SITE_TAGLINE } = Astro.props;
+const pageTitle = title ? `${title} | ${SITE_NAME}` : SITE_NAME;
+
+// Does a file in /public exist? (used so missing images fail gracefully)
+const has = (p) => !!p && fs.existsSync(path.join(process.cwd(), 'public', p.replace(/^\//, '')));
+
+// ── Colors + background become CSS variables ──
+const b = BACKGROUND;
+let bg = `repeating-linear-gradient(${b.stripeAngle}deg, ${b.stripeColorA} 0 ${b.stripeWidth}px, ${b.stripeColorB} ${b.stripeWidth}px ${b.stripeWidth * 2}px)`;
+let bgSize = 'auto';
+let bgRepeat = 'repeat';
+if (b.style === 'solid') {
+  bg = b.solidColor;
+} else if (b.style === 'image' && has(b.image)) {
+  bg = `${COLORS.pageBackground} url("${b.image}")`;
+  bgSize = b.imageFit === 'cover' ? 'cover' : 'auto';
+  bgRepeat = b.imageFit === 'cover' ? 'no-repeat' : 'repeat';
+}
+const vars = `:root{
+  --page: ${COLORS.pageBackground};
+  --box: ${COLORS.boxBackground};
+  --text: ${COLORS.text};
+  --headings: ${COLORS.headings};
+  --link: ${COLORS.links};
+  --button: ${COLORS.buttons};
+  --button-text: ${COLORS.buttonText};
+  --bar: ${COLORS.bars};
+  --bar-text: ${COLORS.barText};
+  --border: ${COLORS.borders};
+  --page-bg: ${bg};
+  --page-bg-size: ${bgSize};
+  --page-bg-repeat: ${bgRepeat};
+}`;
+
+// ── Header image ──
+const headerOk = has(HEADER.image);
+
+// ── Nav ──
+const path_ = Astro.url.pathname.replace(/\/+$/, '') || '/';
+const links = NAV_LINKS.filter((l) => l.href).map((l) => ({
+  ...l,
+  active: !l.newTab && (l.href === path_ || (l.href === '/lookbook' && path_ !== '/')),
+}));
 ---
 <!doctype html>
 <html lang="en">
@@ -15,23 +59,37 @@ const pageTitle = title ? `${title} · ${SITE_NAME}` : SITE_NAME;
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Almendra:wght@400;700&family=Alegreya+Sans:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
+    <style is:inline set:html={vars}></style>
   </head>
   <body>
-    <header class="site-header">
-      <svg class="web" viewBox="0 0 100 100" fill="none" stroke="currentColor" stroke-width="1" aria-hidden="true">
-        <path d="M0 0 L100 0 M0 0 L0 100 M0 0 L86 50 M0 0 L50 86 M0 0 L97 26 M0 0 L26 97" />
-        <path d="M18 0 Q14 14 0 18 M36 0 Q30 30 0 36 M56 0 Q46 46 0 56 M78 0 Q62 62 0 78" />
-      </svg>
-      <div class="wrap">
-        <a class="site-title" href="/">{SITE_NAME}</a>
-        {showTagline && <p class="site-tagline">{SITE_TAGLINE}</p>}
-      </div>
-    </header>
-    <main class="wrap">
-      <slot />
-    </main>
-    <footer class="site-footer">
-      <div class="wrap">{SITE_NAME}</div>
-    </footer>
+    <div class="page">
+      <header class="column">
+        <a class:list={['header-box', { plain: !HEADER.colorBehind }]} href="/" aria-label={`${SITE_NAME} home`}>
+          {headerOk
+            ? <img src={HEADER.image} alt={SITE_NAME} style={`width:${HEADER.width}px`} />
+            : <span class="header-text">{SITE_NAME}</span>}
+        </a>
+        <nav class="nav" aria-label="Main">
+          <ul>
+            {links.map((l) => (
+              <li>
+                <a
+                  href={l.href}
+                  aria-current={l.active ? 'page' : undefined}
+                  target={l.newTab ? '_blank' : undefined}
+                  rel={l.newTab ? 'noopener' : undefined}
+                >{l.label}</a>
+              </li>
+            ))}
+          </ul>
+        </nav>
+      </header>
+
+      <main class="column">
+        <slot />
+      </main>
+
+      <footer class="footer">{FOOTER_TEXT}</footer>
+    </div>
   </body>
 </html>

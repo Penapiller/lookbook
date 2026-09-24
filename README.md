@@ -35,3 +35,12 @@ Change the list in `src/config.mjs` (`HEIGHTS`). If you change a pet's image, th
 
 ## Running it on your own computer (optional)
 Needs Node 20+. Run `npm install`, then `npm run dev`.
+
+## Changing how the site looks
+Everything visual lives in **`src/config.mjs`**: colors, the header image and its size, the background (stripes, solid or picture), the nav links, the Discord link, the footer text, and the home page message and picture.
+Upload your images to the **`public/site`** folder (`header.png`, `promo.png`, optional `background.png`).
+
+## Pages
+- `/` is the home page
+- `/lookbook` is the searchable look book
+- `/PETID` is each pet's page

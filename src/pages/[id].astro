@@ -29,39 +29,41 @@ const sizes = await Promise.all(
 const pageUrl = `${SITE_URL}/${id}`;
 const heroHeight = HEIGHTS.includes(500) ? 500 : HEIGHTS[0];
 ---
-<Base title={`Pet ${id}`} showTagline={false}>
-  <a class="back" href="/">← Back to the look book</a>
+<Base title={`Pet ${id}`}>
+  <a class="back" href="/lookbook">← Back to the Look Book</a>
 
-  <div class="pet-page">
-    <div class="stage">
+  <div class="panel pet-layout">
+    <div class="pet-image">
       <img src={`/pets/${id}-${heroHeight}.png`} alt={`Pet ${id} by ${pet.artist}`} />
     </div>
 
     <div>
-      <h1 class="pet-title">Pet {id}</h1>
-      <p class="pet-meta">Art by <a href={`/?q=${encodeURIComponent(pet.artist ?? '')}`}>{pet.artist}</a></p>
+      <div class="id-tag">#{id}</div>
+      <p class="artist-tag"><span>Art by </span><a href={`/lookbook?q=${encodeURIComponent(pet.artist ?? '')}`}>{pet.artist}</a></p>
 
-      <h2 class="sizes-title">Copy BBCode</h2>
-      <p class="sizes-help">Pick a size and press Copy, then paste it into your post.</p>
+      <div class="bbcode-box">
+        <h2>Copy BBCode</h2>
+        <p class="help">Pick a size, press Copy, and paste it into your post.</p>
 
-      <label class="linkback">
-        <input type="checkbox" id="linkback" />
-        <span>Make the image link back to this page</span>
-      </label>
+        <label class="linkback">
+          <input type="checkbox" id="linkback" />
+          <span>Make the image link back to this page</span>
+        </label>
 
-      <div id="sizes" data-page={pageUrl}>
-        {sizes.map((s) => (
-          <div class="size" data-url={s.url}>
-            <div class="size-head">
-              <span class="size-name">{s.height} px tall</span>
-              {s.width && <span class="size-dims">{s.width} × {s.height} px</span>}
+        <div id="sizes" data-page={pageUrl}>
+          {sizes.map((s) => (
+            <div class="size" data-url={s.url}>
+              <div class="size-head">
+                <span class="size-name">{s.height} px tall</span>
+                {s.width && <span class="size-dims">{s.width} × {s.height} px</span>}
+              </div>
+              <div class="size-row">
+                <code>[img]{s.url}[/img]</code>
+                <button class="copy" type="button">Copy</button>
+              </div>
             </div>
-            <div class="size-row">
-              <code>[img]{s.url}[/img]</code>
-              <button class="copy" type="button">Copy</button>
-            </div>
-          </div>
-        ))}
+          ))}
+        </div>
       </div>
     </div>
   </div>

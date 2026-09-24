@@ -1,0 +1,59 @@
+---
+import Base from '../layouts/Base.astro';
+
+const modules = import.meta.glob('../content/pets/*.json', { eager: true });
+const pets = Object.values(modules)
+  .map((m) => m.default ?? m)
+  .filter((p) => p.id && p.image)
+  .sort((a, b) => String(a.id).localeCompare(String(b.id), undefined, { numeric: true }));
+---
+<Base title="Look Book">
+  <div class="panel">
+    <div class="lookbook-head">
+      <h1>Look Book</h1>
+      <div class="search">
+        <input id="q" type="search" placeholder="Search by pet ID or artist" autocomplete="off" aria-label="Search by pet ID or artist" />
+      </div>
+      <p class="count" id="count" aria-live="polite"></p>
+    </div>
+
+    <ul class="grid" id="grid">
+      {pets.map((p) => (
+        <li data-id={String(p.id).toLowerCase()} data-artist={(p.artist ?? '').toLowerCase()}>
+          <a class="pet-card" href={`/${p.id}`}>
+            <span class="thumb"><img src={`/pets/${p.id}-200.png`} alt={`Pet ${p.id}`} loading="lazy" /></span>
+            <span class="pid">#{p.id}</span>
+            <span class="by">{p.artist}</span>
+          </a>
+        </li>
+      ))}
+    </ul>
+    <p class="empty" id="empty" hidden>Nothing here. Check the ID or artist spelling.</p>
+  </div>
+
+  <script>
+    const input = document.getElementById('q');
+    const items = [...document.querySelectorAll('#grid li')];
+    const count = document.getElementById('count');
+    const empty = document.getElementById('empty');
+
+    function filter() {
+      const q = input.value.trim().toLowerCase().replace(/^#/, '');
+      let shown = 0;
+      for (const li of items) {
+        const hit = !q || li.dataset.id.includes(q) || li.dataset.artist.includes(q);
+        li.hidden = !hit;
+        if (hit) shown++;
+      }
+      empty.hidden = shown !== 0;
+      count.textContent = q ? `${shown} of ${items.length} pets` : `${items.length} pets`;
+      const url = new URL(location.href);
+      q ? url.searchParams.set('q', input.value.trim()) : url.searchParams.delete('q');
+      history.replaceState(null, '', url);
+    }
+
+    input.value = new URLSearchParams(location.search).get('q') ?? '';
+    input.addEventListener('input', filter);
+    filter();
+  </script>
+</Base>
