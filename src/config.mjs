@@ -46,9 +46,9 @@ export const COLORS = {
 // its file name here. If the file isn't found, the site name is
 // shown as text instead.
 export const HEADER = {
-  image: '/site/header.png',
+  image: 'https://txt.1001fonts.net/img/txt/dHRmLjY2LjNkMmY0MS5SRzl0YjNadmFTQkVaVzQuMA/jingle-mochi-demo.italic-italic.webp',
   width: 900,        // how wide it shows, in pixels (height follows automatically)
-  colorBehind: true, // true = show the bar color behind the image (nice for transparent PNGs)
+  colorBehind: false, // true = show the bar color behind the image (nice for transparent PNGs)
 };
 
 
@@ -101,16 +101,16 @@ export const HOME = {
 
 // ─── 7. PET IMAGES ───────────────────────────────────────────────
 // Heights in pixels offered on each pet page. Width follows the pet.
-export const HEIGHTS = [1000, 500, 280, 200];
+export const HEIGHTS = [1000, 500, 270, 200];
 
 // How pet images are shrunk to those sizes:
 //   true  = crisp / a little crunchy (bilinear). Looks sharper on small sizes.
 //   false = smooth and soft (lanczos).
-export const CRISP_RESIZE = true;
+export const CRISP_RESIZE = false;
 
 // (Advanced) Pixel art? Set this to true for perfectly hard edges.
 // It overrides the setting above.
-export const PIXEL_ART = false;
+export const PIXEL_ART = true;
 
 // You don't need to touch this line. It picks the method from the settings above.
 export const RESIZE_KERNEL = PIXEL_ART ? 'nearest' : CRISP_RESIZE ? 'linear' : 'lanczos3';
