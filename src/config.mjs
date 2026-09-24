@@ -101,16 +101,14 @@ export const HOME = {
 
 // ─── 7. PET IMAGES ───────────────────────────────────────────────
 // Heights in pixels offered on each pet page. Width follows the pet.
-export const HEIGHTS = [1000, 500, 265, 200];
+export const HEIGHTS = [1000, 500, 280, 200];
 
-// How pet images are shrunk to those sizes:
-//   true  = crisp / a little crunchy (bilinear). Looks sharper on small sizes.
-//   false = smooth and soft (lanczos).
-export const CRISP_RESIZE = false;
-
-// (Advanced) Pixel art? Set this to true for perfectly hard edges.
-// It overrides the setting above.
-export const PIXEL_ART = true;
+// How pet images are shrunk to those sizes. Pick ONE style:
+//   'hard-edge' = clean lines with crisp, stair-stepped edges. Thin lines stay intact.
+//   'smooth'    = soft, blended edges.
+//   'crisp'     = bilinear. A bit sharper than smooth, still blended.
+//   'pixel'     = raw pixel picking. Very blocky; thin lines can break up.
+export const RESIZE_STYLE = 'hard-edge';
 
 // You don't need to touch this line. It picks the method from the settings above.
 export const RESIZE_KERNEL = PIXEL_ART ? 'nearest' : CRISP_RESIZE ? 'linear' : 'lanczos3';
