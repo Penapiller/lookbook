@@ -101,7 +101,7 @@ export const HOME = {
 
 // ─── 7. PET IMAGES ───────────────────────────────────────────────
 // Heights in pixels offered on each pet page. Width follows the pet.
-export const HEIGHTS = [1000, 500, 280, 200];
+export const HEIGHTS = [1000, 499, 275, 199];
 
 // How pet images are shrunk to those sizes. Pick ONE style:
 //   'hard-edge' = clean lines with crisp, stair-stepped edges. Thin lines stay intact.
