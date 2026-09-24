@@ -29,3 +29,8 @@ content:
         type: image
         required: true
         description: Upload the biggest version you have. PNG with a transparent background is best.
+      - name: bio
+        label: Bio
+        type: text
+        required: false
+        description: Optional. A short blurb shown under the pet image. Blank lines make new paragraphs.
