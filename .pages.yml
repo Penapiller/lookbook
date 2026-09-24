@@ -1,0 +1,31 @@
+# Config for Pages CMS (https://pagescms.org) — the staff upload form.
+media:
+  input: public/uploads
+  output: /uploads
+
+content:
+  - name: pets
+    label: Pets
+    type: collection
+    path: src/content/pets
+    format: json
+    filename: "{primary}.json"
+    view:
+      primary: id
+      fields: [id, artist]
+      sort: [id]
+    fields:
+      - name: id
+        label: Pet ID
+        type: string
+        required: true
+        description: The pet's ID number. This becomes the page address (yoursite.com/ID).
+      - name: artist
+        label: Artist
+        type: string
+        required: true
+      - name: image
+        label: Pet image
+        type: image
+        required: true
+        description: Upload the biggest version you have. PNG with a transparent background is best.
