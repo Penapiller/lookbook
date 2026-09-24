@@ -47,7 +47,7 @@ export const COLORS = {
 // shown as text instead.
 export const HEADER = {
   image: '/site/header.png',
-  width: 900,        // how wide it shows, in pixels (height follows automatically)
+  width: 800,        // how wide it shows, in pixels (height follows automatically)
   colorBehind: false, // true = show the bar color behind the image (nice for transparent PNGs)
 };
 
