@@ -110,5 +110,4 @@ export const HEIGHTS = [1000, 500, 280, 200];
 //   'pixel'     = raw pixel picking. Very blocky; thin lines can break up.
 export const RESIZE_STYLE = 'hard-edge';
 
-// You don't need to touch this line. It picks the method from the settings above.
-export const RESIZE_KERNEL = PIXEL_ART ? 'nearest' : CRISP_RESIZE ? 'linear' : 'lanczos3';
+
