@@ -3,8 +3,8 @@
 export const SITE_URL = 'https://websitename.com';
 
 // Your species name, shown in the header and page titles.
-export const SITE_NAME = 'The Haunted Look Book';
-export const SITE_TAGLINE = 'Every pet, every ID, ready to copy.';
+export const SITE_NAME = 'Domovoi Den';
+export const SITE_TAGLINE = 'A Closed Species by Penapiller';
 
 // Image heights (in pixels) offered on each pet page.
 // Width scales automatically so the pet keeps its shape.
