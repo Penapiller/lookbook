@@ -100,7 +100,9 @@ export const HOME = {
   // One entry per paragraph. You can use <b>bold</b>, <i>italics</i>
   // and <a href="https://example.com">links</a>.
   message: [
-    ' Born when the veil is thin, Domovoi are small trickster spirits closely related to the fae. Unpredictable by nature, and unbound by human customs, they often play by their own rules. If encountered, a sweet treat or shiny object may win their favor... Sometimes. ',
+    ' Born when the veil is thin, Domovoi are small trickster spirits closely related to the fae.', 
+    ' Unpredictable by nature, and unbound by human customs, they often play by their own rules.',
+    ' If encountered, a sweet treat or shiny object may win their favor... Sometimes. ',
   ],
 };
 
