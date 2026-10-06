@@ -139,18 +139,15 @@ export const RULES = {
   sections: [
     {
       heading: 'General Rules',
-      body: [
-        ' <b>You must follow these rules to participate. Failure to follow these rules may result in a ban on participation and/or revocation of adopts. These rules and terms may change from time to time. By participating in this UMA, you acknowledge this and agree to follow all rules, both current and future.The owner reserves the right to take any disciplinary action at any time, for any reason. Listed or otherwise. </b> ',
-        '✦ Follow all site rules at all times.' 
-'✦ Behavior that breaks the spirit of the ARPG will not be tolerated.'
-'✦ Do not edit, trace, alter, or create your own Domovoi.'
-'✦ Your account must be 2 months old or older to play/own Domovoi.'
-'✦ Please keep track of your Domovoi. You must have an up-to-date Co-Op post to play.
-‎ ‎ ‎ 'You have 30 days to add your owned Domovoi to your Co-op before you risk them being rehomed.'
-'✦ You must have direct permission to transfer out of Domovoi.'
-'✦ Domovoi may not be traded for anything other than other Domovoi, Domovoi items, or Domovoi currency at this time.'
-'✦ Domovoi are defined as characters created using the official line arts; if you wish to transfer out of the species, you need permission from the owner and the character designer. If approved, you may no longer use or display the official line arts.'
-      ],
+      body: [ ' <b>You must follow these rules to participate. Failure to follow these rules may result in a ban on participation and/or revocation of adopts. These rules and terms may change from time to time. By participating in this UMA, you acknowledge this and agree to follow all rules, both current and future. The owner reserves the right to take any disciplinary action at any time, for any reason. Listed or otherwise.</b>',
+  '✦ Follow all site rules at all times.',
+  '✦ Behavior that breaks the spirit of the ARPG will not be tolerated.',
+  '✦ Do not edit, trace, alter, or create your own Domovoi.',
+  '✦ Your account must be 2 months old or older to play/own Domovoi.',
+  '✦ Please keep track of your Domovoi. You must have an up-to-date Co-Op post to play. You have 30 days to add your owned Domovoi to your Co-op before you risk them being rehomed.',
+  '✦ You must have direct permission to transfer out of Domovoi.',
+  '✦ Domovoi may not be traded for anything other than other Domovoi, Domovoi items, or Domovoi currency at this time.',
+  '✦ Domovoi are defined as characters created using the official line arts; if you wish to transfer out of the species, you need permission from the owner and the character designer. If approved, you may no longer use or display the official line arts.', ],
     },
     {
       heading: 'Art & Customs',
