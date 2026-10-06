@@ -64,8 +64,8 @@ export const BACKGROUND = {
   style: 'stripes',
 
   // for 'stripes'
-  stripeColorA: '#b8a27d',
-  stripeColorB: '#c9b896',
+  stripeColorA: '#2A2A2A',
+  stripeColorB: '#3E2F44',
   stripeWidth: 36,   // thickness of each stripe, in pixels
   stripeAngle: 45,   // 0 = horizontal stripes, 90 = vertical, 45 = diagonal
 
