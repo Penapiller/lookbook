@@ -1,5 +1,7 @@
 {
-  "id": "001",
-  "name": "MYO ticket ",
-  "image": "/uploads/IMG_3862.png"
+  "name": "Common Candy",
+  "type": "MYO ticket ",
+  "artist": "Penapiller",
+  "image": "/uploads/IMG_3862.png",
+  "bio": "This candy allows users to create a common domovoi with unlimited common traits. "
 }
