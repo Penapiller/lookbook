@@ -34,3 +34,40 @@ content:
         type: text
         required: false
         description: Optional. A short blurb shown under the pet image. Blank lines make new paragraphs.
+
+  - name: items
+    label: Items
+    type: collection
+    path: src/content/items
+    format: json
+    filename: "{primary}.json"
+    view:
+      primary: id
+      fields: [id, name]
+      sort: [id]
+    fields:
+      - name: id
+        label: Item ID
+        type: string
+        required: true
+        description: The item's ID number. This becomes the item's page address (yoursite.com/items/ID).
+      - name: name
+        label: Item Name
+        type: string
+        required: true
+        description: e.g. "MYO Ticket", "Rare Candy"
+      - name: artist
+        label: Artist
+        type: string
+        required: false
+        description: Optional. Leave blank for things like tickets that don't have an artist.
+      - name: image
+        label: Item image
+        type: image
+        required: true
+        description: Upload the biggest version you have. PNG with a transparent background is best.
+      - name: bio
+        label: Information
+        type: text
+        required: false
+        description: Optional. A short blurb shown under the item image.
