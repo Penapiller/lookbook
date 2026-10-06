@@ -1,47 +1,47 @@
 ---
+// The dynamic segment here is named "id" for simplicity, but for items it
+// actually holds the item's name-based page slug (see slug() below) —
+// items don't have a separate ID field.
 import Base from '../../layouts/Base.astro';
-import sharp from 'sharp';
-import path from 'node:path';
-import { SITE_URL, HEIGHTS } from '../../config.mjs';
+import { SITE_URL, PAGES, ITEM_IMAGE_HEIGHT } from '../../config.mjs';
 
 export function getStaticPaths() {
+  if (!PAGES.items) return [];
+
+  function slug(file) {
+    const base = file.split('/').pop().replace(/\.json$/, '').toLowerCase().trim();
+    return base.replace(/[^a-z0-9]+/g, '-').replace(/(^-+|-+$)/g, '') || 'item';
+  }
+
   const modules = import.meta.glob('../../content/items/*.json', { eager: true });
-  return Object.values(modules)
-    .map((m) => m.default ?? m)
-    .filter((it) => it.id && it.image)
-    .map((item) => ({ params: { id: String(item.id) }, props: { item } }));
+  return Object.entries(modules)
+    .map(([file, m]) => ({ ...(m.default ?? m), slug: slug(file) }))
+    .filter((it) => it.name && it.image)
+    .map((item) => ({ params: { id: item.slug }, props: { item } }));
 }
 
 const { item } = Astro.props;
-const id = String(item.id);
-
-// Read the real width of each generated size so we can show it.
-const sizes = await Promise.all(
-  HEIGHTS.map(async (h) => {
-    let width = null;
-    try {
-      const meta = await sharp(path.join(process.cwd(), 'public/items', `${id}-${h}.png`)).metadata();
-      width = meta.width;
-    } catch {}
-    return { height: h, width, url: `${SITE_URL}/items/${id}-${h}.png` };
-  })
-);
 const bio = (item.bio ?? '').trim();
-const pageUrl = `${SITE_URL}/items/${id}`;
-const heroHeight = HEIGHTS.includes(500) ? 500 : HEIGHTS[0];
+const imageUrl = `/items/${item.slug}-${ITEM_IMAGE_HEIGHT}.png`;
 ---
 <Base
-  title={item.name ? `${item.name} (#${id})` : `Item ${id}`}
-  description={item.artist ? `Made by ${item.artist}` : item.name}
-  previewImage={`/items/${id}-${heroHeight}.png`}
+  title={item.name}
+  description={item.artist ? `Made by ${item.artist}` : item.type}
+  previewImage={imageUrl}
 >
   <a class="back" href="/items">← Back to the Item Look Book</a>
 
   <div class="panel pet-layout">
-    <div class="pet-left">
-      <div class="pet-image">
-        <img src={`/items/${id}-${heroHeight}.png`} alt={item.name ?? `Item ${id}`} />
-      </div>
+    <div class="pet-image">
+      <img src={imageUrl} alt={item.name} />
+    </div>
+
+    <div>
+      <h1 class="item-name">{item.name}</h1>
+      {item.type && <div class="id-tag">{item.type}</div>}
+      {item.artist && (
+        <p class="artist-tag"><span>Made by </span><a href={`/items?q=${encodeURIComponent(item.artist)}`}>{item.artist}</a></p>
+      )}
       {bio && (
         <div class="bio-box">
           <h2>Information</h2>
@@ -49,85 +49,17 @@ const heroHeight = HEIGHTS.includes(500) ? 500 : HEIGHTS[0];
         </div>
       )}
     </div>
-
-    <div>
-      <h1 class="item-name">{item.name}</h1>
-      <div class="id-tag">#{id}</div>
-      {item.artist && (
-        <p class="artist-tag"><span>Made by </span><a href={`/items?q=${encodeURIComponent(item.artist)}`}>{item.artist}</a></p>
-      )}
-
-      <div class="bbcode-box">
-        <h2>Copy BBCode</h2>
-        <p class="help">Pick a size, press Copy, and paste it into your post.</p>
-
-        <label class="linkback">
-          <input type="checkbox" id="linkback" />
-          <span>Make the image link back to this page</span>
-        </label>
-
-        <div id="sizes" data-page={pageUrl}>
-          {sizes.map((s) => (
-            <div class="size" data-url={s.url}>
-              <div class="size-head">
-                <span class="size-name">{s.height} px tall</span>
-                {s.width && <span class="size-dims">{s.width} × {s.height} px</span>}
-              </div>
-              <div class="size-row">
-                <code>[img]{s.url}[/img]</code>
-                <button class="copy" type="button">Copy</button>
-              </div>
-            </div>
-          ))}
-        </div>
-      </div>
-    </div>
   </div>
-
-  <script>
-    const box = document.getElementById('sizes');
-    const toggle = document.getElementById('linkback');
-    const page = box.dataset.page;
-
-    function bbcode(url) {
-      const img = `[img]${url}[/img]`;
-      return toggle.checked ? `[url=${page}]${img}[/url]` : img;
-    }
-    function refresh() {
-      box.querySelectorAll('.size').forEach((el) => {
-        el.querySelector('code').textContent = bbcode(el.dataset.url);
-      });
-    }
-    async function copyText(text) {
-      try { await navigator.clipboard.writeText(text); }
-      catch {
-        const ta = document.createElement('textarea');
-        ta.value = text; document.body.appendChild(ta); ta.select();
-        document.execCommand('copy'); ta.remove();
-      }
-    }
-
-    toggle.addEventListener('change', refresh);
-    box.addEventListener('click', async (e) => {
-      const btn = e.target.closest('.copy');
-      if (!btn) return;
-      const el = btn.closest('.size');
-      await copyText(bbcode(el.dataset.url));
-      btn.textContent = 'Copied!';
-      btn.classList.add('done');
-      setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('done'); }, 1600);
-    });
-  </script>
 </Base>
 
 <style>
-  .pet-left { display: grid; gap: 1rem; }
+  .item-name { font-size: clamp(1.6rem, 4.5vw, 2.2rem); margin-bottom: 0.6rem; }
   .bio-box {
+    margin-top: 1rem;
     padding: 0.8rem 1rem 0.9rem;
     border: 2px solid var(--border);
     border-radius: var(--radius);
   }
   .bio-box h2 { font-size: 1.3rem; margin: 0 0 0.3rem; }
   .bio-box p { margin: 0; white-space: pre-line; overflow-wrap: anywhere; }
-  .item-name { font-size: clamp(1.6rem, 4.5vw, 2.2rem); margin-bottom: 0.5rem; }
 </style>

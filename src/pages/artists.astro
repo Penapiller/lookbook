@@ -1,0 +1,62 @@
+---
+import Base from '../layouts/Base.astro';
+import { PAGES } from '../config.mjs';
+
+const modules = PAGES.artists ? import.meta.glob('../content/artists/*.json', { eager: true }) : {};
+const artists = Object.values(modules)
+  .map((m) => m.default ?? m)
+  .filter((a) => a.name)
+  .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }));
+---
+<Base title="Artists" description="Meet the artists behind the pets and items.">
+  <div class="panel">
+    {PAGES.artists ? (
+      <Fragment>
+        <h1>Artists</h1>
+        {artists.length > 0 ? (
+          <ul class="artist-grid">
+            {artists.map((a) => (
+              <li class="artist-card">
+                <span class="artist-name">{a.name}</span>
+                {a.socialUrl && (
+                  <a class="artist-link" href={a.socialUrl} target="_blank" rel="noopener noreferrer">
+                    {a.socialLabel ? `Visit on ${a.socialLabel}` : 'Visit Profile'}
+                  </a>
+                )}
+              </li>
+            ))}
+          </ul>
+        ) : (
+          <p class="empty">No artists added yet.</p>
+        )}
+      </Fragment>
+    ) : (
+      <p class="empty">This page isn't available right now.</p>
+    )}
+  </div>
+</Base>
+
+<style>
+  .artist-grid {
+    list-style: none; margin: 1rem 0 0; padding: 0;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
+    gap: 1rem;
+  }
+  .artist-card {
+    display: flex; flex-direction: column; gap: 0.7rem; align-items: flex-start;
+    padding: 1rem 1.1rem;
+    background: var(--tint);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+  .artist-name { font-family: var(--display); font-size: 1.3rem; color: var(--headings); }
+  .artist-link {
+    display: inline-block;
+    padding: 0.4rem 0.9rem;
+    font-weight: 700; font-size: 0.95rem;
+    color: var(--button-text); background: var(--button);
+    border-radius: 4px; text-decoration: none;
+  }
+  .artist-link:hover { filter: brightness(0.9); }
+</style>

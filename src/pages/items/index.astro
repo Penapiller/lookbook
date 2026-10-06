@@ -1,60 +1,75 @@
 ---
 import Base from '../../layouts/Base.astro';
+import { PAGES, ITEM_IMAGE_HEIGHT } from '../../config.mjs';
 
-const modules = import.meta.glob('../../content/items/*.json', { eager: true });
-const items = Object.values(modules)
-  .map((m) => m.default ?? m)
-  .filter((p) => p.id && p.image)
-  // Newest item first, same as the pet look book.
-  .sort((a, b) => String(b.id).localeCompare(String(a.id), undefined, { numeric: true }));
+// Items have no ID field — the item's name is what identifies it, and the
+// page address comes from the JSON filename Pages CMS already gave it.
+function slug(file) {
+  const base = file.split('/').pop().replace(/\.json$/, '').toLowerCase().trim();
+  return base.replace(/[^a-z0-9]+/g, '-').replace(/(^-+|-+$)/g, '') || 'item';
+}
+
+const modules = PAGES.items ? import.meta.glob('../../content/items/*.json', { eager: true }) : {};
+const items = Object.entries(modules)
+  .map(([file, m]) => ({ ...(m.default ?? m), slug: slug(file) }))
+  .filter((it) => it.name && it.image)
+  .sort((a, b) => a.name.localeCompare(b.name, undefined, { numeric: true, sensitivity: 'base' }));
 ---
-<Base title="Items" description="Browse every item, searchable by ID or name.">
+<Base title="Items" description="Browse every item, searchable by name or type.">
   <div class="panel">
-    <div class="lookbook-head">
-      <h1>Item Look Book</h1>
-      <div class="search">
-        <input id="q" type="search" placeholder="Search by item ID or name" autocomplete="off" aria-label="Search by item ID or name" />
-      </div>
-      <p class="count" id="count" aria-live="polite"></p>
-    </div>
+    {PAGES.items ? (
+      <Fragment>
+        <div class="lookbook-head">
+          <h1>Item Look Book</h1>
+          <div class="search">
+            <input id="q" type="search" placeholder="Search by item name or type" autocomplete="off" aria-label="Search by item name or type" />
+          </div>
+          <p class="count" id="count" aria-live="polite"></p>
+        </div>
 
-    <ul class="grid" id="grid">
-      {items.map((it) => (
-        <li data-id={String(it.id).toLowerCase()} data-name={(it.name ?? '').toLowerCase()} data-artist={(it.artist ?? '').toLowerCase()}>
-          <a class="pet-card" href={`/items/${it.id}`}>
-            <span class="thumb"><img src={`/items/${it.id}-200.png`} alt={it.name ?? `Item ${it.id}`} loading="lazy" /></span>
-            <span class="pid">{it.name}</span>
-            <span class="by">#{it.id}</span>
-          </a>
-        </li>
-      ))}
-    </ul>
-    <p class="empty" id="empty" hidden>Nothing here. Check the ID or name spelling.</p>
+        <ul class="grid" id="grid">
+          {items.map((it) => (
+            <li data-name={(it.name ?? '').toLowerCase()} data-type={(it.type ?? '').toLowerCase()}>
+              <a class="pet-card" href={`/items/${it.slug}`}>
+                <span class="thumb"><img src={`/items/${it.slug}-${ITEM_IMAGE_HEIGHT}.png`} alt={it.name} loading="lazy" /></span>
+                <span class="pid">{it.name}</span>
+                <span class="by">{it.type}</span>
+              </a>
+            </li>
+          ))}
+        </ul>
+        <p class="empty" id="empty" hidden>Nothing here. Check the spelling.</p>
+      </Fragment>
+    ) : (
+      <p class="empty">This page isn't available right now.</p>
+    )}
   </div>
 
-  <script>
-    const input = document.getElementById('q');
-    const items = [...document.querySelectorAll('#grid li')];
-    const count = document.getElementById('count');
-    const empty = document.getElementById('empty');
+  {PAGES.items && (
+    <script>
+      const input = document.getElementById('q');
+      const items = [...document.querySelectorAll('#grid li')];
+      const count = document.getElementById('count');
+      const empty = document.getElementById('empty');
 
-    function filter() {
-      const q = input.value.trim().toLowerCase().replace(/^#/, '');
-      let shown = 0;
-      for (const li of items) {
-        const hit = !q || li.dataset.id.includes(q) || li.dataset.name.includes(q) || li.dataset.artist.includes(q);
-        li.hidden = !hit;
-        if (hit) shown++;
+      function filter() {
+        const q = input.value.trim().toLowerCase();
+        let shown = 0;
+        for (const li of items) {
+          const hit = !q || li.dataset.name.includes(q) || li.dataset.type.includes(q);
+          li.hidden = !hit;
+          if (hit) shown++;
+        }
+        empty.hidden = shown !== 0;
+        count.textContent = q ? `${shown} of ${items.length} items` : `${items.length} items`;
+        const url = new URL(location.href);
+        q ? url.searchParams.set('q', input.value.trim()) : url.searchParams.delete('q');
+        history.replaceState(null, '', url);
       }
-      empty.hidden = shown !== 0;
-      count.textContent = q ? `${shown} of ${items.length} items` : `${items.length} items`;
-      const url = new URL(location.href);
-      q ? url.searchParams.set('q', input.value.trim()) : url.searchParams.delete('q');
-      history.replaceState(null, '', url);
-    }
 
-    input.value = new URLSearchParams(location.search).get('q') ?? '';
-    input.addEventListener('input', filter);
-    filter();
-  </script>
+      input.value = new URLSearchParams(location.search).get('q') ?? '';
+      input.addEventListener('input', filter);
+      filter();
+    </script>
+  )}
 </Base>

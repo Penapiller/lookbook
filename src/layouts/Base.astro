@@ -52,10 +52,13 @@ const pageUrl = `${SITE_URL}${Astro.url.pathname.replace(/\/+$/, '') || '/'}`;
 // ── Nav ──
 // Pet pages live at the site root (e.g. /014) rather than under
 // /lookbook, so the Look Book link should stay highlighted there too.
+// This list is every section EXCEPT pets, kept separate from NAV_LINKS
+// so it still works correctly even if Items/Rules/Artists are turned
+// off in PAGES (and so their link disappears from the nav bar).
 const path_ = Astro.url.pathname.replace(/\/+$/, '') || '/';
 const topSegment = '/' + (path_.split('/')[1] ?? '');
-const sectionPaths = NAV_LINKS.filter((l) => l.href && l.href !== '/' && !l.newTab).map((l) => l.href);
-const isPetPage = path_ !== '/' && !sectionPaths.includes(topSegment);
+const RESERVED_PATHS = ['/lookbook', '/items', '/rules', '/artists'];
+const isPetPage = path_ !== '/' && !RESERVED_PATHS.includes(topSegment);
 
 const links = NAV_LINKS.filter((l) => l.href).map((l) => ({
   ...l,

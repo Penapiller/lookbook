@@ -78,19 +78,34 @@ export const BACKGROUND = {
 };
 
 
-// ─── 5. NAV BAR ──────────────────────────────────────────────────
-// The links under the header. Reorder, rename or add your own.
-// A link with an empty address (like Discord above) is hidden.
+// ─── 5. PAGES ────────────────────────────────────────────────────
+// Turn whole pages on or off. true = on, false = off.
+// A page that's off also disappears from the nav bar below, and its
+// address shows a short "not available" message instead of an error.
+// (Home and the pet Look Book are always on.)
+export const PAGES = {
+  items:   true, // the /items look book
+  rules:   true, // the /rules page
+  artists: true, // the /artists page
+};
+
+
+// ─── 6. NAV BAR ──────────────────────────────────────────────────
+// The links under the header. Reorder or rename the ones that are
+// always shown. Items, Rules and Artists come from the PAGES
+// settings above and disappear on their own when turned off.
+// A link with an empty address (like Discord) is hidden too.
 export const NAV_LINKS = [
   { label: 'Home',      href: '/' },
   { label: 'Look Book', href: '/lookbook' },
-  { label: 'Items',     href: '/items' },
-  { label: 'Rules',     href: '/rules' },
+  ...(PAGES.items   ? [{ label: 'Items',   href: '/items' }]   : []),
+  ...(PAGES.rules   ? [{ label: 'Rules',   href: '/rules' }]   : []),
+  ...(PAGES.artists ? [{ label: 'Artists', href: '/artists' }] : []),
   { label: 'Discord',   href: DISCORD_URL, newTab: true },
 ];
 
 
-// ─── 6. HOME PAGE ────────────────────────────────────────────────
+// ─── 7. HOME PAGE ────────────────────────────────────────────────
 // Upload the picture to "public/site", then put its file name here.
 // If the file isn't found, the message simply takes the full width.
 export const HOME = {
@@ -106,7 +121,7 @@ export const HOME = {
 };
 
 
-// ─── 7. RULES PAGE ───────────────────────────────────────────────
+// ─── 8. RULES PAGE ───────────────────────────────────────────────
 // The /rules page. It looks like the home page: a white panel with an
 // optional picture, a title, and your text, broken into as many
 // sections as you like.
@@ -126,20 +141,7 @@ export const RULES = {
     {
       heading: 'General Rules',
       body: [
-        'You must follow these rules to participate.' 
-'Failure to follow these rules may result in a ban on participation and/or revocation of adopts. These rules and terms may change from time to time. By participating in this UMA, you acknowledge this and agree to follow all rules, both current and future.The owner reserves the right to take any disciplinary action at any time, for any reason. Listed or otherwise.'
-
-'✦ Follow all site rules at all times.'
-'✦ Behavior that breaks the spirit of the ARPG will not be tolerated.'
-'✦ Do not edit, trace, alter, or create your own Domovoi.'
-'✦ Your account must be 2 months old or older to play/own Domovoi.'
-'✦ Please keep track of your Domovoi. You must have an up-to-date Co-Op post to play.'
-‎ ‎ '‎ You have 30 days to add your owned Domovoi to your Co-op before you risk them being rehomed.
-'✦ You must have direct permission to transfer out of Domovoi.
-'✦ Domovoi may not be traded for anything other than other Domovoi, Domovoi items, or Domovoi currency at this time.
-'✦ Domovoi are defined as characters created using the official line arts; if you wish to transfer out of the species, you need permission from the owner and the character designer. If approved, you may no longer use or display the official line arts.
-
-'There are additional rules in other sections that must be followed as well.',
+        'Write your general species rules here.',
       ],
     },
     {
@@ -158,12 +160,15 @@ export const RULES = {
 };
 
 
-// ─── 8. PET & ITEM IMAGES ──────────────────────────────────────────
-// Heights in pixels offered on each pet and item page. Width follows
-// the picture's own shape.
+// ─── 9. PET & ITEM IMAGES ──────────────────────────────────────────
+// Heights in pixels offered to copy as BBCode on each pet page.
+// Width follows the pet's own shape.
 export const HEIGHTS = [1000, 500, 280, 200];
 
-// How pet images are shrunk to those sizes. Pick ONE style:
+// Items only show one picture (no size options to copy), this tall.
+export const ITEM_IMAGE_HEIGHT = 400;
+
+// How pet and item images are shrunk down to those sizes. Pick ONE style:
 //   'hard-edge' = clean lines with crisp, stair-stepped edges. Thin lines stay intact.
 //   'smooth'    = soft, blended edges.
 //   'crisp'     = bilinear. A bit sharper than smooth, still blended.

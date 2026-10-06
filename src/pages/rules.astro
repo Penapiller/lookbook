@@ -2,23 +2,29 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import Base from '../layouts/Base.astro';
-import { RULES, SITE_NAME } from '../config.mjs';
+import { RULES, PAGES, SITE_NAME } from '../config.mjs';
 
-const hasImage = RULES.image && fs.existsSync(path.join(process.cwd(), 'public', RULES.image.replace(/^\//, '')));
+const hasImage = PAGES.rules && RULES.image && fs.existsSync(path.join(process.cwd(), 'public', RULES.image.replace(/^\//, '')));
 ---
-<Base title="Rules" description={RULES.title}>
-  <div class="panel home-card" style={`--promo-w:${RULES.imageWidth}px`}>
-    {hasImage && <img src={RULES.image} alt={`${SITE_NAME} rules`} />}
-    <div class="home-text">
-      <h1>{RULES.title}</h1>
-      {RULES.sections.map((section) => (
-        <div class="rules-section">
-          {section.heading && <h2>{section.heading}</h2>}
-          {section.body.map((p) => <p set:html={p} />)}
-        </div>
-      ))}
+<Base title="Rules" description={PAGES.rules ? RULES.title : 'Rules'}>
+  {PAGES.rules ? (
+    <div class="panel home-card" style={`--promo-w:${RULES.imageWidth}px`}>
+      {hasImage && <img src={RULES.image} alt={`${SITE_NAME} rules`} />}
+      <div class="home-text">
+        <h1>{RULES.title}</h1>
+        {RULES.sections.map((section) => (
+          <div class="rules-section">
+            {section.heading && <h2>{section.heading}</h2>}
+            {section.body.map((p) => <p set:html={p} />)}
+          </div>
+        ))}
+      </div>
     </div>
-  </div>
+  ) : (
+    <div class="panel">
+      <p class="empty">This page isn't available right now.</p>
+    </div>
+  )}
 </Base>
 
 <style>
