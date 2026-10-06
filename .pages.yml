@@ -42,20 +42,20 @@ content:
     format: json
     filename: "{primary}.json"
     view:
-      primary: id
-      fields: [id, name]
-      sort: [id]
+      primary: name
+      fields: [name, type]
+      sort: [name]
     fields:
-      - name: id
-        label: Item ID
-        type: string
-        required: true
-        description: The item's ID number. This becomes the item's page address (yoursite.com/items/ID).
       - name: name
         label: Item Name
         type: string
         required: true
-        description: e.g. "MYO Ticket", "Rare Candy"
+        description: e.g. "MYO Ticket", "Rare Candy". This becomes the item's page address, so try to avoid renaming it later once players have shared links to it.
+      - name: type
+        label: Item Type
+        type: string
+        required: true
+        description: e.g. "Ticket", "Currency", "Collectible"
       - name: artist
         label: Artist
         type: string
@@ -70,4 +70,30 @@ content:
         label: Information
         type: text
         required: false
-        description: Optional. A short blurb shown under the item image.
+        description: Optional. Shown next to the item image.
+
+  - name: artists
+    label: Artists
+    type: collection
+    path: src/content/artists
+    format: json
+    filename: "{primary}.json"
+    view:
+      primary: name
+      fields: [name, socialLabel]
+      sort: [name]
+    fields:
+      - name: name
+        label: Artist Username
+        type: string
+        required: true
+      - name: socialUrl
+        label: Social Media Link
+        type: string
+        required: false
+        description: Optional. Paste the full web address, e.g. https://instagram.com/username
+      - name: socialLabel
+        label: Social Media Site Name
+        type: string
+        required: false
+        description: Optional. e.g. "Instagram", "Toyhouse", "DeviantArt". Shown on the button. Leave blank and the button just says "Visit Profile".
