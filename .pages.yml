@@ -33,7 +33,7 @@ content:
         label: Information
         type: text
         required: false
-        description: Optional. A short blurb shown under the pet image. Blank lines make new paragraphs.
+        description: Optional. A short blurb shown under the pet image. Blank lines make new paragraphs. Supports simple BBCode -- [b]bold[/b], [i]italic[/i], [u]underline[/u], [s]strikethrough[/s], [url=link]text[/url].
 
   - name: items
     label: Items
@@ -70,7 +70,7 @@ content:
         label: Information
         type: text
         required: false
-        description: Optional. Shown next to the item image.
+        description: Optional. Shown next to the item image. Supports simple BBCode -- [b]bold[/b], [i]italic[/i], [u]underline[/u], [s]strikethrough[/s], [url=link]text[/url].
 
   - name: artists
     label: Artists
