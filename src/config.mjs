@@ -37,7 +37,7 @@ export const COLORS = {
   pageBackground: '#b8a27d', // behind everything (the stripes use their own colors, see section 4)
   boxBackground:  '#ffffff', // the white boxes that hold your content
   text:           '#47402e', // normal writing
-  headings:       '#a35733', // big titles
+  headings:       '#3F2E44', // big titles
   links:          '#a35733', // links inside text
   buttons:        '#a35733', // Copy buttons and highlights
   buttonText:     '#ffffff', // writing on the buttons
@@ -65,7 +65,7 @@ export const BACKGROUND = {
 
   // for 'stripes'
   stripeColorA: '#fffbaf',
-  stripeColorB: '#ffd191',
+  stripeColorB: '#d6ac75',
   stripeWidth: 36,   // thickness of each stripe, in pixels
   stripeAngle: 45,   // 0 = horizontal stripes, 90 = vertical, 45 = diagonal
 
