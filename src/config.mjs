@@ -43,7 +43,7 @@ export const COLORS = {
   buttonText:     '#ffffff', // writing on the buttons
   bars:           '#e77920', // the header box and the footer bar
   barText:        '#33291a', // writing on those bars (keep it dark on a light bar)
-  borders:        '#3F2E44', // thin lines around boxes
+  borders:        '#f2e2cb', // thin lines around boxes
 };
 
 
