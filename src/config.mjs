@@ -85,7 +85,7 @@ export const BACKGROUND = {
 // (Home and the pet Look Book are always on.)
 export const PAGES = {
   items:   true, // the /items look book
-  rules:   true, // the /rules page
+  rules:   false, // the /rules page
   artists: false, // the /artists page
 };
 
@@ -116,7 +116,7 @@ export const HOME = {
   // and <a href="https://example.com">links</a>.
   message: [
     '<i> Born when the veil is thin, Domovoi are small trickster spirits closely related to the fae. Unpredictable by nature, and unbound by human customs, they often play by their own rules.',  ' If encountered, a sweet treat or shiny object may win their favor... Sometimes. </i>',
- 'This website is still being worked on. Please check the ChickenSmoothie Page for the most up-to-date info. Thank you.' ],
+ '<b>This website is still being worked on. Please check the ChickenSmoothie Page for the most up-to-date info. Thank you.</b>' ],
 };
 
 
