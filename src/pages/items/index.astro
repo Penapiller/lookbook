@@ -1,36 +1,35 @@
 ---
-import Base from '../layouts/Base.astro';
+import Base from '../../layouts/Base.astro';
 
-const modules = import.meta.glob('../content/pets/*.json', { eager: true });
-const pets = Object.values(modules)
+const modules = import.meta.glob('../../content/items/*.json', { eager: true });
+const items = Object.values(modules)
   .map((m) => m.default ?? m)
   .filter((p) => p.id && p.image)
-  // Newest pet first. Pet IDs are assigned in the order pets are added,
-  // so sorting ID high-to-low puts the most recently uploaded pet first.
+  // Newest item first, same as the pet look book.
   .sort((a, b) => String(b.id).localeCompare(String(a.id), undefined, { numeric: true }));
 ---
-<Base title="Look Book" description="Browse every pet, searchable by ID or artist.">
+<Base title="Items" description="Browse every item, searchable by ID or name.">
   <div class="panel">
     <div class="lookbook-head">
-      <h1>Look Book</h1>
+      <h1>Item Look Book</h1>
       <div class="search">
-        <input id="q" type="search" placeholder="Search by pet ID or artist" autocomplete="off" aria-label="Search by pet ID or artist" />
+        <input id="q" type="search" placeholder="Search by item ID or name" autocomplete="off" aria-label="Search by item ID or name" />
       </div>
       <p class="count" id="count" aria-live="polite"></p>
     </div>
 
     <ul class="grid" id="grid">
-      {pets.map((p) => (
-        <li data-id={String(p.id).toLowerCase()} data-artist={(p.artist ?? '').toLowerCase()}>
-          <a class="pet-card" href={`/${p.id}`}>
-            <span class="thumb"><img src={`/pets/${p.id}-200.png`} alt={`Pet ${p.id}`} loading="lazy" /></span>
-            <span class="pid">#{p.id}</span>
-            <span class="by">{p.artist}</span>
+      {items.map((it) => (
+        <li data-id={String(it.id).toLowerCase()} data-name={(it.name ?? '').toLowerCase()} data-artist={(it.artist ?? '').toLowerCase()}>
+          <a class="pet-card" href={`/items/${it.id}`}>
+            <span class="thumb"><img src={`/items/${it.id}-200.png`} alt={it.name ?? `Item ${it.id}`} loading="lazy" /></span>
+            <span class="pid">{it.name}</span>
+            <span class="by">#{it.id}</span>
           </a>
         </li>
       ))}
     </ul>
-    <p class="empty" id="empty" hidden>Nothing here. Check the ID or artist spelling.</p>
+    <p class="empty" id="empty" hidden>Nothing here. Check the ID or name spelling.</p>
   </div>
 
   <script>
@@ -43,12 +42,12 @@ const pets = Object.values(modules)
       const q = input.value.trim().toLowerCase().replace(/^#/, '');
       let shown = 0;
       for (const li of items) {
-        const hit = !q || li.dataset.id.includes(q) || li.dataset.artist.includes(q);
+        const hit = !q || li.dataset.id.includes(q) || li.dataset.name.includes(q) || li.dataset.artist.includes(q);
         li.hidden = !hit;
         if (hit) shown++;
       }
       empty.hidden = shown !== 0;
-      count.textContent = q ? `${shown} of ${items.length} pets` : `${items.length} pets`;
+      count.textContent = q ? `${shown} of ${items.length} items` : `${items.length} items`;
       const url = new URL(location.href);
       q ? url.searchParams.set('q', input.value.trim()) : url.searchParams.delete('q');
       history.replaceState(null, '', url);

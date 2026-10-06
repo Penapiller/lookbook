@@ -2,9 +2,12 @@
 import '../styles/global.css';
 import fs from 'node:fs';
 import path from 'node:path';
-import { SITE_NAME, SITE_TAGLINE, FOOTER_TEXT, COLORS, HEADER, BACKGROUND, NAV_LINKS } from '../config.mjs';
+import { SITE_NAME, SITE_TAGLINE, SITE_URL, SITE_PREVIEW_IMAGE, FOOTER_TEXT, COLORS, HEADER, BACKGROUND, NAV_LINKS } from '../config.mjs';
 
-const { title, description = SITE_TAGLINE } = Astro.props;
+// previewImage: a root-relative path (e.g. "/pets/014-500.png") for this
+// specific page's social-media preview picture. If left out, the site's
+// default SITE_PREVIEW_IMAGE is used instead.
+const { title, description = SITE_TAGLINE, previewImage } = Astro.props;
 const pageTitle = title ? `${title} | ${SITE_NAME}` : SITE_NAME;
 
 // Does a file in /public exist? (used so missing images fail gracefully)
@@ -41,11 +44,22 @@ const vars = `:root{
 // ── Header image ──
 const headerOk = has(HEADER.image);
 
+// ── Discord / social media preview card ──
+const pagePreview = previewImage || (has(SITE_PREVIEW_IMAGE) ? SITE_PREVIEW_IMAGE : null);
+const ogImage = pagePreview ? `${SITE_URL}${pagePreview}` : null;
+const pageUrl = `${SITE_URL}${Astro.url.pathname.replace(/\/+$/, '') || '/'}`;
+
 // ── Nav ──
+// Pet pages live at the site root (e.g. /014) rather than under
+// /lookbook, so the Look Book link should stay highlighted there too.
 const path_ = Astro.url.pathname.replace(/\/+$/, '') || '/';
+const topSegment = '/' + (path_.split('/')[1] ?? '');
+const sectionPaths = NAV_LINKS.filter((l) => l.href && l.href !== '/' && !l.newTab).map((l) => l.href);
+const isPetPage = path_ !== '/' && !sectionPaths.includes(topSegment);
+
 const links = NAV_LINKS.filter((l) => l.href).map((l) => ({
   ...l,
-  active: !l.newTab && (l.href === path_ || (l.href === '/lookbook' && path_ !== '/')),
+  active: !l.newTab && (topSegment === l.href || (l.href === '/lookbook' && isPetPage)),
 }));
 ---
 <!doctype html>
@@ -56,6 +70,17 @@ const links = NAV_LINKS.filter((l) => l.href).map((l) => ({
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
     <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎃</text></svg>" />
+
+    <!-- Discord / social media preview card -->
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={SITE_NAME} />
+    <meta property="og:title" content={pageTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={pageUrl} />
+    {ogImage && <meta property="og:image" content={ogImage} />}
+    <meta name="twitter:card" content={ogImage ? 'summary_large_image' : 'summary'} />
+    <meta name="theme-color" content={COLORS.bars} />
+
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Almendra:wght@400;700&family=Alegreya+Sans:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />

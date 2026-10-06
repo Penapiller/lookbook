@@ -23,6 +23,12 @@ export const FOOTER_TEXT = `${SITE_NAME}. ${SITE_TAGLINE}.`;
 // Leave it empty ('') to hide the Discord link from the nav bar.
 export const DISCORD_URL = '';
 
+// Picture shown when someone shares a link to your home page, look book,
+// items page or rules page on Discord or social media (pet and item pages
+// use their own picture automatically). Upload it to "public/site".
+// Leave the file missing and this is simply skipped.
+export const SITE_PREVIEW_IMAGE = '/site/preview.png';
+
 
 // ─── 2. COLORS ───────────────────────────────────────────────────
 // Every color on the site. Use hex codes like '#e77920'.
@@ -78,6 +84,8 @@ export const BACKGROUND = {
 export const NAV_LINKS = [
   { label: 'Home',      href: '/' },
   { label: 'Look Book', href: '/lookbook' },
+  { label: 'Items',     href: '/items' },
+  { label: 'Rules',     href: '/rules' },
   { label: 'Discord',   href: DISCORD_URL, newTab: true },
 ];
 
@@ -99,8 +107,48 @@ export const HOME = {
 };
 
 
-// ─── 7. PET IMAGES ───────────────────────────────────────────────
-// Heights in pixels offered on each pet page. Width follows the pet.
+// ─── 7. RULES PAGE ───────────────────────────────────────────────
+// The /rules page. It looks like the home page: a white panel with an
+// optional picture, a title, and your text, broken into as many
+// sections as you like.
+export const RULES = {
+  // Optional picture next to the title. Upload to "public/site", or
+  // leave this pointing at a file that doesn't exist to hide it.
+  image: '/site/rules.png',
+  imageWidth: 260,
+
+  title: 'Species Rules',
+
+  // Add, remove or reorder sections freely. "heading" can be left as
+  // '' to show a section with no sub-heading. Each paragraph in
+  // "body" can use <b>bold</b>, <i>italics</i> and
+  // <a href="https://example.com">links</a>, same as the home page.
+  sections: [
+    {
+      heading: 'General Rules',
+      body: [
+        'Write your general species rules here.',
+      ],
+    },
+    {
+      heading: 'Art & Customs',
+      body: [
+        'Write your art and customization rules here.',
+      ],
+    },
+    {
+      heading: 'Trading & Selling',
+      body: [
+        'Write your trading and selling rules here.',
+      ],
+    },
+  ],
+};
+
+
+// ─── 8. PET & ITEM IMAGES ──────────────────────────────────────────
+// Heights in pixels offered on each pet and item page. Width follows
+// the picture's own shape.
 export const HEIGHTS = [1000, 500, 280, 200];
 
 // How pet images are shrunk to those sizes. Pick ONE style:

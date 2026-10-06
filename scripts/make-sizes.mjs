@@ -1,16 +1,12 @@
-// Runs before every dev/build. For each pet, makes one PNG per height in
-// public/pets/<id>-<height>.png from the original uploaded image.
+// Runs before every dev/build. For each pet AND each item, makes one PNG
+// per height in public/pets/<id>-<height>.png (or public/items/...) from
+// the original uploaded image.
 import fs from 'node:fs';
 import path from 'node:path';
 import sharp from 'sharp';
 import { HEIGHTS, RESIZE_STYLE } from '../src/config.mjs';
 
 const root = process.cwd();
-const petsDir = path.join(root, 'src/content/pets');
-const outDir = path.join(root, 'public/pets');
-fs.mkdirSync(outDir, { recursive: true });
-
-// Changing the settings file re-makes every size.
 const configTime = fs.statSync(path.join(root, 'src/config.mjs')).mtimeMs;
 
 const STYLES = ['hard-edge', 'smooth', 'crisp', 'pixel'];
@@ -42,37 +38,47 @@ async function makeSize(src, height, out) {
   await sharp(src).resize({ height, kernel: KERNELS[style] }).png().toFile(out);
 }
 
-const files = fs.existsSync(petsDir) ? fs.readdirSync(petsDir).filter((f) => f.endsWith('.json')) : [];
-let made = 0;
-let skipped = 0;
+// Makes every size for every entry in one content folder (pets or items).
+async function processCollection(label, contentDirName, outDirName) {
+  const contentDir = path.join(root, 'src/content', contentDirName);
+  const outDir = path.join(root, 'public', outDirName);
+  fs.mkdirSync(outDir, { recursive: true });
 
-for (const file of files) {
-  let pet;
-  try {
-    pet = JSON.parse(fs.readFileSync(path.join(petsDir, file), 'utf8'));
-  } catch (e) {
-    console.warn(`⚠ Could not read ${file}: ${e.message}`);
-    continue;
-  }
-  if (!pet.id || !pet.image) {
-    console.warn(`⚠ ${file} is missing an id or image, skipping.`);
-    continue;
-  }
-  const src = path.join(root, 'public', pet.image.replace(/^\//, ''));
-  if (!fs.existsSync(src)) {
-    console.warn(`⚠ Image not found for pet ${pet.id}: ${pet.image}`);
-    continue;
-  }
-  const srcTime = Math.max(fs.statSync(src).mtimeMs, configTime);
+  const files = fs.existsSync(contentDir) ? fs.readdirSync(contentDir).filter((f) => f.endsWith('.json')) : [];
+  let made = 0;
+  let skipped = 0;
 
-  for (const h of HEIGHTS) {
-    const out = path.join(outDir, `${pet.id}-${h}.png`);
-    if (fs.existsSync(out) && fs.statSync(out).mtimeMs >= srcTime) {
-      skipped++;
+  for (const file of files) {
+    let entry;
+    try {
+      entry = JSON.parse(fs.readFileSync(path.join(contentDir, file), 'utf8'));
+    } catch (e) {
+      console.warn(`⚠ Could not read ${contentDirName}/${file}: ${e.message}`);
       continue;
     }
-    await makeSize(src, h, out);
-    made++;
+    if (!entry.id || !entry.image) {
+      console.warn(`⚠ ${contentDirName}/${file} is missing an id or image, skipping.`);
+      continue;
+    }
+    const src = path.join(root, 'public', entry.image.replace(/^\//, ''));
+    if (!fs.existsSync(src)) {
+      console.warn(`⚠ Image not found for ${label} ${entry.id}: ${entry.image}`);
+      continue;
+    }
+    const srcTime = Math.max(fs.statSync(src).mtimeMs, configTime);
+
+    for (const h of HEIGHTS) {
+      const out = path.join(outDir, `${entry.id}-${h}.png`);
+      if (fs.existsSync(out) && fs.statSync(out).mtimeMs >= srcTime) {
+        skipped++;
+        continue;
+      }
+      await makeSize(src, h, out);
+      made++;
+    }
   }
+  console.log(`${label} images (${style}): ${made} created, ${skipped} already up to date.`);
 }
-console.log(`Pet images (${style}): ${made} created, ${skipped} already up to date.`);
+
+await processCollection('Pet', 'pets', 'pets');
+await processCollection('Item', 'items', 'items');

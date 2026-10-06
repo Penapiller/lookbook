@@ -1,42 +1,46 @@
 ---
-import Base from '../layouts/Base.astro';
+import Base from '../../layouts/Base.astro';
 import sharp from 'sharp';
 import path from 'node:path';
-import { SITE_URL, HEIGHTS } from '../config.mjs';
+import { SITE_URL, HEIGHTS } from '../../config.mjs';
 
 export function getStaticPaths() {
-  const modules = import.meta.glob('../content/pets/*.json', { eager: true });
+  const modules = import.meta.glob('../../content/items/*.json', { eager: true });
   return Object.values(modules)
     .map((m) => m.default ?? m)
-    .filter((p) => p.id && p.image)
-    .map((pet) => ({ params: { id: String(pet.id) }, props: { pet } }));
+    .filter((it) => it.id && it.image)
+    .map((item) => ({ params: { id: String(item.id) }, props: { item } }));
 }
 
-const { pet } = Astro.props;
-const id = String(pet.id);
+const { item } = Astro.props;
+const id = String(item.id);
 
 // Read the real width of each generated size so we can show it.
 const sizes = await Promise.all(
   HEIGHTS.map(async (h) => {
     let width = null;
     try {
-      const meta = await sharp(path.join(process.cwd(), 'public/pets', `${id}-${h}.png`)).metadata();
+      const meta = await sharp(path.join(process.cwd(), 'public/items', `${id}-${h}.png`)).metadata();
       width = meta.width;
     } catch {}
-    return { height: h, width, url: `${SITE_URL}/pets/${id}-${h}.png` };
+    return { height: h, width, url: `${SITE_URL}/items/${id}-${h}.png` };
   })
 );
-const bio = (pet.bio ?? '').trim();
-const pageUrl = `${SITE_URL}/${id}`;
+const bio = (item.bio ?? '').trim();
+const pageUrl = `${SITE_URL}/items/${id}`;
 const heroHeight = HEIGHTS.includes(500) ? 500 : HEIGHTS[0];
 ---
-<Base title={`Pet ${id}`} description={`Art by ${pet.artist}`} previewImage={`/pets/${id}-${heroHeight}.png`}>
-  <a class="back" href="/lookbook">← Back to the Look Book</a>
+<Base
+  title={item.name ? `${item.name} (#${id})` : `Item ${id}`}
+  description={item.artist ? `Made by ${item.artist}` : item.name}
+  previewImage={`/items/${id}-${heroHeight}.png`}
+>
+  <a class="back" href="/items">← Back to the Item Look Book</a>
 
   <div class="panel pet-layout">
     <div class="pet-left">
       <div class="pet-image">
-        <img src={`/pets/${id}-${heroHeight}.png`} alt={`Pet ${id} by ${pet.artist}`} />
+        <img src={`/items/${id}-${heroHeight}.png`} alt={item.name ?? `Item ${id}`} />
       </div>
       {bio && (
         <div class="bio-box">
@@ -47,8 +51,11 @@ const heroHeight = HEIGHTS.includes(500) ? 500 : HEIGHTS[0];
     </div>
 
     <div>
+      <h1 class="item-name">{item.name}</h1>
       <div class="id-tag">#{id}</div>
-      <p class="artist-tag"><span>Art by </span><a href={`/lookbook?q=${encodeURIComponent(pet.artist ?? '')}`}>{pet.artist}</a></p>
+      {item.artist && (
+        <p class="artist-tag"><span>Made by </span><a href={`/items?q=${encodeURIComponent(item.artist)}`}>{item.artist}</a></p>
+      )}
 
       <div class="bbcode-box">
         <h2>Copy BBCode</h2>
@@ -122,4 +129,5 @@ const heroHeight = HEIGHTS.includes(500) ? 500 : HEIGHTS[0];
   }
   .bio-box h2 { font-size: 1.3rem; margin: 0 0 0.3rem; }
   .bio-box p { margin: 0; white-space: pre-line; overflow-wrap: anywhere; }
+  .item-name { font-size: clamp(1.6rem, 4.5vw, 2.2rem); margin-bottom: 0.5rem; }
 </style>

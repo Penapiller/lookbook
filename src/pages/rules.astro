@@ -1,0 +1,28 @@
+---
+import fs from 'node:fs';
+import path from 'node:path';
+import Base from '../layouts/Base.astro';
+import { RULES, SITE_NAME } from '../config.mjs';
+
+const hasImage = RULES.image && fs.existsSync(path.join(process.cwd(), 'public', RULES.image.replace(/^\//, '')));
+---
+<Base title="Rules" description={RULES.title}>
+  <div class="panel home-card" style={`--promo-w:${RULES.imageWidth}px`}>
+    {hasImage && <img src={RULES.image} alt={`${SITE_NAME} rules`} />}
+    <div class="home-text">
+      <h1>{RULES.title}</h1>
+      {RULES.sections.map((section) => (
+        <div class="rules-section">
+          {section.heading && <h2>{section.heading}</h2>}
+          {section.body.map((p) => <p set:html={p} />)}
+        </div>
+      ))}
+    </div>
+  </div>
+</Base>
+
+<style>
+  .rules-section { margin-bottom: 1.4rem; }
+  .rules-section:last-child { margin-bottom: 0; }
+  .rules-section h2 { font-size: 1.4rem; margin-bottom: 0.4rem; }
+</style>
