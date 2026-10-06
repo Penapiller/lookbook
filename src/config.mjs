@@ -165,7 +165,7 @@ export const RULES = {
 export const HEIGHTS = [1000, 500, 280, 200];
 
 // Items only show one picture (no size options to copy), this tall.
-export const ITEM_IMAGE_HEIGHT = 400;
+export const ITEM_IMAGE_HEIGHT = 500;
 
 // How wide that picture actually shows on the item's page, in pixels.
 // (This is separate from ITEM_IMAGE_HEIGHT above — that's the size of
