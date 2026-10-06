@@ -3,6 +3,7 @@ import Base from '../layouts/Base.astro';
 import sharp from 'sharp';
 import path from 'node:path';
 import { SITE_URL, HEIGHTS } from '../config.mjs';
+import { bbcodeToHtml } from '../bbcode.mjs';
 
 export function getStaticPaths() {
   const modules = import.meta.glob('../content/pets/*.json', { eager: true });
@@ -27,6 +28,7 @@ const sizes = await Promise.all(
   })
 );
 const bio = (pet.bio ?? '').trim();
+const bioHtml = bio ? bbcodeToHtml(bio) : '';
 const pageUrl = `${SITE_URL}/${id}`;
 const heroHeight = HEIGHTS.includes(500) ? 500 : HEIGHTS[0];
 ---
@@ -41,7 +43,7 @@ const heroHeight = HEIGHTS.includes(500) ? 500 : HEIGHTS[0];
       {bio && (
         <div class="bio-box">
           <h2>Information</h2>
-          <p>{bio}</p>
+          <p set:html={bioHtml} />
         </div>
       )}
     </div>

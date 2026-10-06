@@ -168,6 +168,11 @@ export const HEIGHTS = [1000, 500, 280, 200];
 // Items only show one picture (no size options to copy), this tall.
 export const ITEM_IMAGE_HEIGHT = 400;
 
+// How wide that picture actually shows on the item's page, in pixels.
+// (This is separate from ITEM_IMAGE_HEIGHT above — that's the size of
+// the picture file itself; this is just how big it displays.)
+export const ITEM_IMAGE_DISPLAY_WIDTH = 220;
+
 // How pet and item images are shrunk down to those sizes. Pick ONE style:
 //   'hard-edge' = clean lines with crisp, stair-stepped edges. Thin lines stay intact.
 //   'smooth'    = soft, blended edges.

@@ -3,7 +3,8 @@
 // actually holds the item's name-based page slug (see slug() below) —
 // items don't have a separate ID field.
 import Base from '../../layouts/Base.astro';
-import { SITE_URL, PAGES, ITEM_IMAGE_HEIGHT } from '../../config.mjs';
+import { SITE_URL, PAGES, ITEM_IMAGE_HEIGHT, ITEM_IMAGE_DISPLAY_WIDTH } from '../../config.mjs';
+import { bbcodeToHtml } from '../../bbcode.mjs';
 
 export function getStaticPaths() {
   if (!PAGES.items) return [];
@@ -22,6 +23,7 @@ export function getStaticPaths() {
 
 const { item } = Astro.props;
 const bio = (item.bio ?? '').trim();
+const bioHtml = bio ? bbcodeToHtml(bio) : '';
 const imageUrl = `/items/${item.slug}-${ITEM_IMAGE_HEIGHT}.png`;
 ---
 <Base
@@ -32,20 +34,20 @@ const imageUrl = `/items/${item.slug}-${ITEM_IMAGE_HEIGHT}.png`;
   <a class="back" href="/items">← Back to the Item Look Book</a>
 
   <div class="panel pet-layout">
-    <div class="pet-image">
+    <div class="item-image" style={`--item-img-w:${ITEM_IMAGE_DISPLAY_WIDTH}px`}>
       <img src={imageUrl} alt={item.name} />
     </div>
 
     <div>
       <h1 class="item-name">{item.name}</h1>
-      {item.type && <div class="id-tag">{item.type}</div>}
+      {item.type && <div class="type-tag">{item.type}</div>}
       {item.artist && (
         <p class="artist-tag"><span>Made by </span><a href={`/items?q=${encodeURIComponent(item.artist)}`}>{item.artist}</a></p>
       )}
       {bio && (
         <div class="bio-box">
           <h2>Information</h2>
-          <p>{bio}</p>
+          <p set:html={bioHtml} />
         </div>
       )}
     </div>
@@ -54,6 +56,38 @@ const imageUrl = `/items/${item.slug}-${ITEM_IMAGE_HEIGHT}.png`;
 
 <style>
   .item-name { font-size: clamp(1.6rem, 4.5vw, 2.2rem); margin-bottom: 0.6rem; }
+
+  /* The item's picture. Width comes from ITEM_IMAGE_DISPLAY_WIDTH in
+     config.mjs (the --item-img-w variable set above), so it doesn't
+     stretch to fill the column the way the pet picture does. */
+  .item-image {
+    display: grid;
+    place-items: center;
+    padding: 1rem;
+    background: var(--tint);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+  }
+  .item-image img {
+    display: block;
+    width: 100%;
+    max-width: var(--item-img-w, 260px);
+    height: auto;
+  }
+
+  /* A small pill-shaped tag, not a big heading like the pet ID tag. */
+  .type-tag {
+    display: inline-block;
+    font-family: var(--body);
+    font-weight: 700;
+    font-size: 0.85rem;
+    letter-spacing: 0.02em;
+    color: var(--headings);
+    padding: 0.3rem 0.7rem;
+    border: 1.5px solid var(--headings);
+    border-radius: 999px;
+  }
+
   .bio-box {
     margin-top: 1rem;
     padding: 0.8rem 1rem 0.9rem;
