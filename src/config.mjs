@@ -14,7 +14,7 @@
 export const SITE_URL = 'https://domovoiden.species.workers.dev'.replace(/\/+$/, '');
 
 export const SITE_NAME = 'Domovoi Den';
-export const SITE_TAGLINE = 'A Closed Species by Penapiller';
+export const SITE_TAGLINE = 'Website build by Penapiller';
 
 // Text in the bar at the bottom of every page.
 export const FOOTER_TEXT = `${SITE_NAME}. ${SITE_TAGLINE}.`;
@@ -100,9 +100,12 @@ export const HOME = {
   // One entry per paragraph. You can use <b>bold</b>, <i>italics</i>
   // and <a href="https://example.com">links</a>.
   message: [
-    'This is the official look book for Domovoi Den. Every pet has its own page with copy-and-paste BBCode in several sizes.',
-    'Open the <a href="/lookbook">Look Book</a> to browse every pet, or search by pet ID or artist.',
-    'Replace this message with your own welcome, news, or rules.',
+    ' Born when the veil is thin, Domovoi are small ',
+' trickster spirits closely related to the fae.',
+' Unpredictable by nature, and unbound by ',
+'human customs, they often play by their own ',
+'rules. If encountered, a sweet treat or shiny',
+'object may win their favor... Sometimes. ',
   ],
 };
 
