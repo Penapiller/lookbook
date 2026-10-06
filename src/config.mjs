@@ -37,13 +37,13 @@ export const COLORS = {
   pageBackground: '#b8a27d', // behind everything (the stripes use their own colors, see section 4)
   boxBackground:  '#ffffff', // the white boxes that hold your content
   text:           '#47402e', // normal writing
-  headings:       '#3F2E44', // big titles
+  headings:       '#A35733', // big titles
   links:          '#a35733', // links inside text
   buttons:        '#a35733', // Copy buttons and highlights
   buttonText:     '#ffffff', // writing on the buttons
   bars:           '#e77920', // the header box and the footer bar
   barText:        '#33291a', // writing on those bars (keep it dark on a light bar)
-  borders:        '#b8a27d', // thin lines around boxes
+  borders:        '#3F2E44', // thin lines around boxes
 };
 
 
