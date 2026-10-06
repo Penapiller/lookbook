@@ -85,7 +85,7 @@ export const BACKGROUND = {
 // (Home and the pet Look Book are always on.)
 export const PAGES = {
   items:   true, // the /items look book
-  rules:   false, // the /rules page
+  rules:   true, // the /rules page
   artists: false, // the /artists page
 };
 
