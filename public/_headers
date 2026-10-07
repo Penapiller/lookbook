@@ -1,3 +1,7 @@
 /pets/*
   Access-Control-Allow-Origin: *
-  Cache-Control: public, max-age=86400
+  Cache-Control: public, no-cache
+
+/items/*
+  Access-Control-Allow-Origin: *
+  Cache-Control: public, no-cache
