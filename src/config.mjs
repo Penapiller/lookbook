@@ -241,7 +241,7 @@ export const ITEM_IMAGE_DISPLAY_WIDTH = 220;
 // to use a random code in the address instead of a chosen label.
 //
 // Set height to 0 to turn this off completely (no picture gets made).
-export const ITEM_SECRET_SIZE = { label: 'Secret', height: 75 };
+export const ITEM_SECRET_SIZE = { label: 'Icon', height: 75 };
 
 
 // ─── 12. HOW IMAGES ARE RESIZED ─────────────────────────────────────
