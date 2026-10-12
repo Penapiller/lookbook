@@ -2,8 +2,9 @@
 import Base from '../layouts/Base.astro';
 import sharp from 'sharp';
 import path from 'node:path';
-import { SITE_URL, HEIGHTS } from '../config.mjs';
+import { SITE_URL, PET_SIZES, SHOW_TRAITS } from '../config.mjs';
 import { bbcodeToHtml } from '../bbcode.mjs';
+import { sizeFilename, closestSize } from '../sizes.mjs';
 
 export function getStaticPaths() {
   const modules = import.meta.glob('../content/pets/*.json', { eager: true });
@@ -18,32 +19,41 @@ const id = String(pet.id);
 
 // Read the real width of each generated size so we can show it.
 const sizes = await Promise.all(
-  HEIGHTS.map(async (h) => {
+  PET_SIZES.map(async (size) => {
+    const filename = sizeFilename(id, size.label);
     let width = null;
     try {
-      const meta = await sharp(path.join(process.cwd(), 'public/pets', `${id}-${h}.png`)).metadata();
+      const meta = await sharp(path.join(process.cwd(), 'public/pets', filename)).metadata();
       width = meta.width;
     } catch {}
-    return { height: h, width, url: `${SITE_URL}/pets/${id}-${h}.png` };
+    return { label: size.label, height: size.height, width, url: `${SITE_URL}/pets/${filename}` };
   })
 );
 const bio = (pet.bio ?? '').trim();
 const bioHtml = bio ? bbcodeToHtml(bio) : '';
+const traits = SHOW_TRAITS ? (pet.traits ?? '').trim() : '';
+const traitsHtml = traits ? bbcodeToHtml(traits) : '';
 const pageUrl = `${SITE_URL}/${id}`;
-const heroHeight = HEIGHTS.includes(500) ? 500 : HEIGHTS[0];
+const heroFilename = sizeFilename(id, closestSize(PET_SIZES, 500).label);
 ---
-<Base title={`Pet ${id}`} description={`Art by ${pet.artist}`} previewImage={`/pets/${id}-${heroHeight}.png`}>
+<Base title={`Pet ${id}`} description={`Art by ${pet.artist}`} previewImage={`/pets/${heroFilename}`}>
   <a class="back" href="/lookbook">← Back to the Look Book</a>
 
   <div class="panel pet-layout">
     <div class="pet-left">
       <div class="pet-image">
-        <img src={`/pets/${id}-${heroHeight}.png`} alt={`Pet ${id} by ${pet.artist}`} />
+        <img src={`/pets/${heroFilename}`} alt={`Pet ${id} by ${pet.artist}`} />
       </div>
       {bio && (
         <div class="bio-box">
           <h2>Information</h2>
           <p set:html={bioHtml} />
+        </div>
+      )}
+      {traits && (
+        <div class="bio-box">
+          <h2>Traits</h2>
+          <p set:html={traitsHtml} />
         </div>
       )}
     </div>
@@ -65,7 +75,7 @@ const heroHeight = HEIGHTS.includes(500) ? 500 : HEIGHTS[0];
           {sizes.map((s) => (
             <div class="size" data-url={s.url}>
               <div class="size-head">
-                <span class="size-name">{s.height} px tall</span>
+                <span class="size-name">{s.label}</span>
                 {s.width && <span class="size-dims">{s.width} × {s.height} px</span>}
               </div>
               <div class="size-row">

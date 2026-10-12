@@ -1,10 +1,11 @@
 // Runs before every dev/build. For each pet AND each item, makes one PNG
-// per height in public/pets/<key>-<height>.png (or public/items/...) from
+// per size in public/pets/<key>-<LABEL>.png (or public/items/...) from
 // the original uploaded image.
 import fs from 'node:fs';
 import path from 'node:path';
 import sharp from 'sharp';
-import { HEIGHTS, ITEM_IMAGE_HEIGHT, RESIZE_STYLE } from '../src/config.mjs';
+import { PET_SIZES, ITEM_DISPLAY_SIZE, ITEM_SECRET_SIZE, RESIZE_STYLE } from '../src/config.mjs';
+import { sizeFilename } from '../src/sizes.mjs';
 
 const root = process.cwd();
 const configTime = fs.statSync(path.join(root, 'src/config.mjs')).mtimeMs;
@@ -46,8 +47,29 @@ function slugFromFilename(file) {
   return base.replace(/[^a-z0-9]+/g, '-').replace(/(^-+|-+$)/g, '') || 'item';
 }
 
+// Catches two sizes in the same list that would land on the same address
+// (e.g. two both labeled "Official", or two with the same label). Each
+// one would silently overwrite the other's file, so this warns loudly
+// instead of leaving behind a confusing mix of pictures.
+function checkForCollisions(label, sizes) {
+  const seen = new Map();
+  for (const size of sizes) {
+    const suffix = sizeFilename('KEY', size.label);
+    if (seen.has(suffix)) {
+      console.warn(
+        `⚠ ${label}: "${seen.get(suffix)}" and "${size.label}" both produce the same address ` +
+        `(KEY${suffix.slice(3)}). Give one of them a different label in config.mjs, or they'll ` +
+        `keep overwriting each other.`
+      );
+    } else {
+      seen.set(suffix, size.label);
+    }
+  }
+}
+checkForCollisions('PET_SIZES', PET_SIZES);
+
 // Makes every size for every entry in one content folder (pets or items).
-async function processCollection(label, contentDirName, outDirName, heights, getKey) {
+async function processCollection(label, contentDirName, outDirName, sizes, getKey) {
   const contentDir = path.join(root, 'src/content', contentDirName);
   const outDir = path.join(root, 'public', outDirName);
   fs.mkdirSync(outDir, { recursive: true });
@@ -76,18 +98,34 @@ async function processCollection(label, contentDirName, outDirName, heights, get
     }
     const srcTime = Math.max(fs.statSync(src).mtimeMs, configTime);
 
-    for (const h of heights) {
-      const out = path.join(outDir, `${key}-${h}.png`);
+    for (const size of sizes) {
+      const out = path.join(outDir, sizeFilename(key, size.label));
       if (fs.existsSync(out) && fs.statSync(out).mtimeMs >= srcTime) {
         skipped++;
         continue;
       }
-      await makeSize(src, h, out);
+      await makeSize(src, size.height, out);
       made++;
     }
   }
   console.log(`${label} images (${style}): ${made} created, ${skipped} already up to date.`);
 }
 
-await processCollection('Pet', 'pets', 'pets', HEIGHTS, (entry) => entry.id);
-await processCollection('Item', 'items', 'items', [ITEM_IMAGE_HEIGHT], (entry, file) => slugFromFilename(file));
+await processCollection('Pet', 'pets', 'pets', PET_SIZES, (entry) => entry.id);
+
+// Items: the normal display picture, plus the unlinked "secret" one if
+// that's turned on (height isn't 0) and doesn't collide with the display
+// size's own address.
+const itemSizes = [ITEM_DISPLAY_SIZE];
+if (ITEM_SECRET_SIZE.height > 0) {
+  if (sizeFilename('KEY', ITEM_SECRET_SIZE.label) === sizeFilename('KEY', ITEM_DISPLAY_SIZE.label)) {
+    console.warn(
+      `⚠ ITEM_SECRET_SIZE and ITEM_DISPLAY_SIZE have the same label ("${ITEM_DISPLAY_SIZE.label}"), ` +
+      `so they'd overwrite the same file. Give ITEM_SECRET_SIZE its own label in config.mjs -- the ` +
+      `secret picture was skipped this build.`
+    );
+  } else {
+    itemSizes.push(ITEM_SECRET_SIZE);
+  }
+}
+await processCollection('Item', 'items', 'items', itemSizes, (entry, file) => slugFromFilename(file));

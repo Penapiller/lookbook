@@ -1,6 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
-import { PAGES, ITEM_IMAGE_HEIGHT } from '../../config.mjs';
+import { PAGES, ITEM_DISPLAY_SIZE } from '../../config.mjs';
+import { sizeFilename } from '../../sizes.mjs';
 
 // Items have no ID field — the item's name is what identifies it, and the
 // page address comes from the JSON filename Pages CMS already gave it.
@@ -31,7 +32,7 @@ const items = Object.entries(modules)
           {items.map((it) => (
             <li data-name={(it.name ?? '').toLowerCase()} data-type={(it.type ?? '').toLowerCase()}>
               <a class="pet-card" href={`/items/${it.slug}`}>
-                <span class="thumb"><img src={`/items/${it.slug}-${ITEM_IMAGE_HEIGHT}.png`} alt={it.name} loading="lazy" /></span>
+                <span class="thumb"><img src={`/items/${sizeFilename(it.slug, ITEM_DISPLAY_SIZE.label)}`} alt={it.name} loading="lazy" /></span>
                 <span class="pid">{it.name}</span>
                 <span class="by">{it.type}</span>
               </a>

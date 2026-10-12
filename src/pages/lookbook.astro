@@ -1,5 +1,9 @@
 ---
 import Base from '../layouts/Base.astro';
+import { PET_SIZES } from '../config.mjs';
+import { sizeFilename, smallestSize } from '../sizes.mjs';
+
+const thumbLabel = smallestSize(PET_SIZES).label;
 
 const modules = import.meta.glob('../content/pets/*.json', { eager: true });
 const pets = Object.values(modules)
@@ -23,7 +27,7 @@ const pets = Object.values(modules)
       {pets.map((p) => (
         <li data-id={String(p.id).toLowerCase()} data-artist={(p.artist ?? '').toLowerCase()}>
           <a class="pet-card" href={`/${p.id}`}>
-            <span class="thumb"><img src={`/pets/${p.id}-200.png`} alt={`Pet ${p.id}`} loading="lazy" /></span>
+            <span class="thumb"><img src={`/pets/${sizeFilename(p.id, thumbLabel)}`} alt={`Pet ${p.id}`} loading="lazy" /></span>
             <span class="pid">#{p.id}</span>
             <span class="by">{p.artist}</span>
           </a>

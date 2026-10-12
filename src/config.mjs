@@ -29,6 +29,18 @@ export const DISCORD_URL = '';
 // Leave the file missing and this is simply skipped.
 export const SITE_PREVIEW_IMAGE = '/site/preview.png';
 
+// The little icon shown in the browser tab.
+//   - To use your own picture: upload a small square image to
+//     "public/site" (name it anything, e.g. "favicon.png") and put its
+//     file name below. Works best as a simple, square image -- 64x64px
+//     or so is plenty; anything bigger just gets shrunk by the browser.
+//   - To use an emoji instead, leave "image" as '' and put any single
+//     emoji in "emoji" (the default is a jack-o'-lantern).
+export const FAVICON = {
+  image: '',
+  emoji: '🎃',
+};
+
 
 // ─── 2. COLORS ───────────────────────────────────────────────────
 // Every color on the site. Use hex codes like '#e77920'.
@@ -165,20 +177,75 @@ export const RULES = {
 };
 
 
-// ─── 9. PET & ITEM IMAGES ──────────────────────────────────────────
-// Heights in pixels offered to copy as BBCode on each pet page.
-// Width follows the pet's own shape.
-export const HEIGHTS = [1000, 500, 280, 200];
+// ─── 9. PET TRAITS ───────────────────────────────────────────────
+// An optional second box on pet pages, below Information, for listing
+// a pet's traits. If a pet's Traits field is left blank in Pages CMS,
+// the box just doesn't show up for that pet -- same as Information.
+//
+// Setting this to false hides the Traits box on every pet page, even
+// for pets that have something typed into their Traits field. It does
+// NOT remove the Traits field from the Pages CMS upload form itself --
+// staff can still fill it in, the site just won't display it while
+// this is off. (To remove the field from the CMS form entirely, see
+// the "traits" field in .pages.yml and delete that block.)
+export const SHOW_TRAITS = true;
 
-// Items only show one picture (no size options to copy), this tall.
-export const ITEM_IMAGE_HEIGHT = 500;
+
+// ─── 10. PET IMAGE SIZES ────────────────────────────────────────────
+// Each entry below is one size offered to copy as BBCode on a pet's
+// page, and sets that picture's web address:
+//   yoursite.com/pets/PETID-LABEL.png
+// "height" is the actual picture size made, in pixels -- width follows
+// the pet's own shape. "label" is both what's shown in the size list
+// AND what goes into the address, so change it any time you like; the
+// coder (that's you!) picks the words.
+//
+// List them in whatever order you want them to appear on the page.
+//
+// Give exactly ONE size the label "Official" or "Standard" (capitals
+// don't matter) and that size's address drops the label entirely:
+//   yoursite.com/pets/PETID.png
+// Don't give two sizes that same label -- they'd fight over the one
+// blank address and the build will warn you if that happens.
+export const PET_SIZES = [
+  { label: 'Huge',     height: 1000 },
+  { label: 'Large',    height: 500 },
+  { label: 'Standard', height: 280 },
+  { label: 'Small',    height: 200 },
+];
+
+
+// ─── 11. ITEM IMAGE SIZES ───────────────────────────────────────────
+// The one picture shown on an item's page (items don't have a size
+// list to copy from, like pets do). Same label rules as PET_SIZES
+// above apply -- "Official"/"Standard" drops the label from the address.
+export const ITEM_DISPLAY_SIZE = { label: 'Display', height: 500 };
 
 // How wide that picture actually shows on the item's page, in pixels.
-// (This is separate from ITEM_IMAGE_HEIGHT above — that's the size of
-// the picture file itself; this is just how big it displays.)
+// (This is separate from the height above -- that's the size of the
+// picture file itself; this is just how big it displays.)
 export const ITEM_IMAGE_DISPLAY_WIDTH = 220;
 
-// How pet and item images are shrunk down to those sizes. Pick ONE style:
+// A second, smaller picture also made for every item, at its own
+// address using this label -- e.g. yoursite.com/items/item-name-Secret.png.
+// It's never linked to anywhere on the site itself (not on the item's
+// page, not in the look book), so an ordinary visitor browsing the
+// site will never come across it. Useful for things like a hidden
+// stamp or code for an event.
+//
+// Heads up: this only makes the picture un-LINKED, not truly secret.
+// The address still follows the exact same "item-name-LABEL.png"
+// pattern as every other item picture, so anyone who already knows
+// that pattern could type the right address in and find it. If you
+// need it to be genuinely hard to guess, say so and it can be changed
+// to use a random code in the address instead of a chosen label.
+//
+// Set height to 0 to turn this off completely (no picture gets made).
+export const ITEM_SECRET_SIZE = { label: 'Secret', height: 75 };
+
+
+// ─── 12. HOW IMAGES ARE RESIZED ─────────────────────────────────────
+// How pet and item images are shrunk down to all the sizes above. Pick ONE style:
 //   'hard-edge' = clean lines with crisp, stair-stepped edges. Thin lines stay intact.
 //   'smooth'    = soft, blended edges.
 //   'crisp'     = bilinear. A bit sharper than smooth, still blended.

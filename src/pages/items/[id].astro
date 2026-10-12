@@ -3,8 +3,9 @@
 // actually holds the item's name-based page slug (see slug() below) —
 // items don't have a separate ID field.
 import Base from '../../layouts/Base.astro';
-import { SITE_URL, PAGES, ITEM_IMAGE_HEIGHT, ITEM_IMAGE_DISPLAY_WIDTH } from '../../config.mjs';
+import { SITE_URL, PAGES, ITEM_DISPLAY_SIZE, ITEM_IMAGE_DISPLAY_WIDTH } from '../../config.mjs';
 import { bbcodeToHtml } from '../../bbcode.mjs';
+import { sizeFilename } from '../../sizes.mjs';
 
 export function getStaticPaths() {
   if (!PAGES.items) return [];
@@ -24,7 +25,7 @@ export function getStaticPaths() {
 const { item } = Astro.props;
 const bio = (item.bio ?? '').trim();
 const bioHtml = bio ? bbcodeToHtml(bio) : '';
-const imageUrl = `/items/${item.slug}-${ITEM_IMAGE_HEIGHT}.png`;
+const imageUrl = `/items/${sizeFilename(item.slug, ITEM_DISPLAY_SIZE.label)}`;
 ---
 <Base
   title={item.name}

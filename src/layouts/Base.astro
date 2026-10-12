@@ -2,7 +2,7 @@
 import '../styles/global.css';
 import fs from 'node:fs';
 import path from 'node:path';
-import { SITE_NAME, SITE_TAGLINE, SITE_URL, SITE_PREVIEW_IMAGE, FOOTER_TEXT, COLORS, HEADER, BACKGROUND, NAV_LINKS } from '../config.mjs';
+import { SITE_NAME, SITE_TAGLINE, SITE_URL, SITE_PREVIEW_IMAGE, FAVICON, FOOTER_TEXT, COLORS, HEADER, BACKGROUND, NAV_LINKS } from '../config.mjs';
 
 // previewImage: a root-relative path (e.g. "/pets/014-500.png") for this
 // specific page's social-media preview picture. If left out, the site's
@@ -12,6 +12,12 @@ const pageTitle = title ? `${title} | ${SITE_NAME}` : SITE_NAME;
 
 // Does a file in /public exist? (used so missing images fail gracefully)
 const has = (p) => !!p && fs.existsSync(path.join(process.cwd(), 'public', p.replace(/^\//, '')));
+
+// Favicon: use the uploaded picture if one's set and actually there,
+// otherwise fall back to the emoji.
+const faviconHref = has(FAVICON.image)
+  ? FAVICON.image
+  : `data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>${encodeURIComponent(FAVICON.emoji || '🎃')}</text></svg>`;
 
 // ── Colors + background become CSS variables ──
 const b = BACKGROUND;
@@ -72,7 +78,7 @@ const links = NAV_LINKS.filter((l) => l.href).map((l) => ({
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{pageTitle}</title>
     <meta name="description" content={description} />
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎃</text></svg>" />
+    <link rel="icon" href={faviconHref} />
 
     <!-- Discord / social media preview card -->
     <meta property="og:type" content="website" />
