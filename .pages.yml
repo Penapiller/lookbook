@@ -34,6 +34,11 @@ content:
         type: text
         required: false
         description: Optional. A short blurb shown under the pet image. Blank lines make new paragraphs. Supports simple BBCode -- [b]bold[/b], [i]italic[/i], [u]underline[/u], [s]strikethrough[/s], [url=link]text[/url].
+      - name: traits
+        label: Traits
+        type: text
+        required: false
+        description: Optional. Shown in its own box below Information. Blank lines make new paragraphs. Supports the same BBCode as Information. Can be hidden site-wide with SHOW_TRAITS in config.mjs.
 
   - name: items
     label: Items
